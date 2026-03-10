@@ -2,8 +2,10 @@
 
 ### Simple “index” page with a table and toolbar
 
+Adapt the root layout and assigns to the host app. If the repo uses a wrapper like `<Layouts.app ...>`, preserve that shape; otherwise keep the example inside the app's existing layout conventions.
+
 ```heex
-<Layouts.app flash={@flash} current_scope={@current_scope}>
+<Layouts.app flash={@flash}>
   <div id="page-users" class="container mx-auto max-w-5xl px-4 py-6">
     <div class="flex items-center justify-between gap-4">
       <div>
@@ -32,9 +34,7 @@
 
 ### Theme-safe color usage
 
-- Prefer:
-  - `bg-base-100`, `bg-base-200`, `border-base-300`
-  - `text-base-content`, `text-base-content/70`
-  - DaisyUI semantic classes: `card`, `btn`, `alert`, `badge`, `tabs`
-- Avoid hard-coded grays like `text-gray-600` unless you verify both themes.
-
+- Prefer `bg-base-100`, `bg-base-200`, `border-base-300`
+- Prefer `text-base-content`, `text-base-content/70`
+- Prefer DaisyUI semantic classes such as `card`, `btn`, `alert`, `badge`, and `tabs`
+- Avoid hard-coded grays like `text-gray-600` unless you verify both themes

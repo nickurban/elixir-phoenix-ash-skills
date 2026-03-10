@@ -1,6 +1,7 @@
 ---
 name: wireframe-liveview-daisyui
 description: Use when creating or iterating on Phoenix LiveView screens with DaisyUI and Tailwind, especially for wireframes, forms, layouts, component extraction, and light/dark-safe UI scaffolding.
+license: MIT
 ---
 
 # Wireframe LiveView with DaisyUI
@@ -9,7 +10,9 @@ Use this skill for fast, functional LiveView UI work that should stay on real Ph
 
 Treat DaisyUI-based prototypes as the default UI delivery path for these projects.
 
-Check relevant Phoenix and Ash `usage_rules` before introducing new UI structure or hook patterns.
+Check relevant Phoenix and Ash `usage_rules` before introducing new UI structure or hook patterns when the repo provides them.
+
+If DaisyUI, expected layout/components, or other normal UI affordances are missing, tell the user briefly and adapt to the project's actual setup rather than forcing the default pattern blindly.
 
 ## Hard rules
 
@@ -18,13 +21,13 @@ Check relevant Phoenix and Ash `usage_rules` before introducing new UI structure
 - Use Tailwind utilities for layout and spacing.
 - Keep screens working in both light and dark themes.
 - Keep prototypes on real project rails: verified routes, real Ash forms, real policies, real LiveView flows.
-- Respect existing usage rules and boundary layers instead of putting domain logic directly into UI code.
+- Respect existing usage rules and boundary layers when they exist instead of putting domain logic directly into UI code.
 - Use only `app.js` and `app.css` bundles; do not add vendor `<script>` or `<link>` tags.
 - Do not write inline `<script>` blocks in HEEx. Use colocated LiveView hooks instead.
-- Page templates should start with `<Layouts.app ...>` and pass the expected shared assigns such as `flash`, `current_scope`, and `current_user`.
+- Follow the repo's existing root layout pattern. If the app uses `<Layouts.app ...>` and shared assigns such as `flash`, `current_scope`, and `current_user`, preserve them rather than inventing a parallel layout path.
 - Use `<.link navigate={...}>` and `<.link patch={...}>`, not legacy `live_redirect` or `live_patch`.
 - Use `<.form for={@form}>` plus `<.input field={@form[:field]}>`; do not pass raw changesets to templates.
-- Prefer generated `form_to_*` helpers over direct `AshPhoenix.Form.for_create/for_update` when possible.
+- Prefer generated `form_to_*` helpers over direct `AshPhoenix.Form.for_create/for_update` when the domain exposes them.
 - Give important one-off elements stable DOM ids. Use descriptive `data-*` attributes where repeated elements need stable test hooks.
 
 ## Preferred workflow

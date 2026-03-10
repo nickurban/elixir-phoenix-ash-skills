@@ -31,13 +31,15 @@ end
 
 ## LiveView form flow
 
-Prefer generated `form_to_*` functions:
+Prefer generated `form_to_*` functions when the domain exposes them:
 
 ```elixir
 form =
   MyApp.Domain.form_to_create_thing(actor: current_user, as: "thing")
   |> to_form()
 ```
+
+Otherwise, fall back to the repo's existing AshPhoenix form initialization pattern rather than inventing a new abstraction.
 
 ```elixir
 def handle_event("validate", %{"thing" => params}, socket) do

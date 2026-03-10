@@ -1,6 +1,7 @@
 ---
 name: planning-ash-phoenix-prototypes
 description: Use when creating implementation plans for Ash, Phoenix, and LiveView work. Produces concise, durable plans that stay Ash-first, identify dependencies early, and map requirements to concrete execution steps.
+license: MIT
 ---
 
 # Planning Ash Phoenix Prototypes
@@ -19,19 +20,21 @@ Use this skill when the user wants a plan rather than immediate implementation.
 
 Identify the requirements and search for existing tools that simplify the implementation:
 
-- relevant dependency `usage_rules`
+- relevant dependency `usage_rules` when present
 - relevant Ash extensions
 - project dependencies already in use
 - well-maintained Elixir libraries when no Ash extension fits
 
 Ask the user before locking in a choice only when it introduces a new dependency, materially changes architecture, or creates a meaningful trade-off they should choose.
 
+If the project is missing expected tools, conventions, or plan artifacts, call that out explicitly in the plan instead of silently assuming the normal setup exists.
+
 ## What the plan should include
 
 - the intended resource, domain, LiveView, and test shape
 - the key decisions and why they were chosen
 - the execution order, preferably in independently testable vertical slices
-- the verification path, including tests and `mix precommit`
+- the verification path, including tests and `mix precommit` when the repo defines it
 
 ## Durable plan artifacts
 
@@ -53,7 +56,7 @@ Before presenting the plan, confirm:
 - dependency choices are explicit
 - no requirement was silently dropped
 - the plan references specialist skills instead of duplicating them
-- the final steps include tests, coverage review when relevant, and `mix precommit`
+- the final steps include tests, coverage review when relevant, and `mix precommit` when available
 
 ## Related skills
 

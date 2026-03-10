@@ -1,13 +1,16 @@
 ---
 name: phoenix-ui-tests
 description: Use when writing or updating Phoenix feature tests with PhoenixTest for LiveView and dead views, including Ash-powered forms and permission-sensitive UI flows.
+license: MIT
 ---
 
 # Phoenix UI Tests
 
 Use this skill for end-to-end style Phoenix feature tests built with PhoenixTest.
 
-Check relevant `usage_rules` before introducing new testing patterns.
+Check relevant `usage_rules` before introducing new testing patterns when the repo provides them.
+
+If PhoenixTest or the expected test helpers are missing, tell the user briefly and confirm the actual project test stack before proceeding.
 
 ## Default approach
 
@@ -46,6 +49,7 @@ If you need API help, inspect PhoenixTest docs locally. Packages that are test-o
 
 - `MIX_ENV=test mix help PhoenixTest`
 - `mix usage_rules.docs PhoenixTest` and `mix usage_rules.search_docs PhoenixTest` when available
+- If those tasks are absent, use the installed package docs or official PhoenixTest docs instead
 
 ## Related skills
 

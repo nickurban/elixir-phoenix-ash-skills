@@ -1,23 +1,25 @@
 ---
 name: elixir-phoenix-ash
 description: Use when working in Elixir Phoenix projects built around Ash, AshAuthentication, AshPhoenix forms, and PhoenixTest. This is the umbrella skill for shared project conventions and routing to the more specific Ash, UI, testing, and planning skills.
+license: MIT
 ---
 
 # Elixir Phoenix Ash
 
-Use this as the umbrella skill for projects that consistently use Phoenix, Ash, AshAuthentication, AshPhoenix forms, PhoenixTest, and TDD.
+Use this as the umbrella skill for opinionated Phoenix prototype projects that consistently use Phoenix, Ash, AshAuthentication, AshPhoenix forms, PhoenixTest, and TDD.
 
-Assume these projects also have shared `usage_rules` and `boundary` conventions; follow them when they are present in the repo.
+These projects often define shared `usage_rules`, `boundary` modules, `mix precommit`, and local shell tooling. Use those conventions when they are present in the repo, and degrade gracefully to the closest standard Phoenix/Ash workflow when they are not.
 
 ## Core defaults
 
-- Use `mix precommit` when implementation is complete; fix any issues it reports.
-- Expect `mix precommit` to gate on compilation warnings, dependency hygiene, formatting, security checks, strict linting, coverage, and Dialyzer.
-- If `mix` or Elixir are unavailable in the shell, run `eval "$(mise activate zsh)"`.
+- Use `mix precommit` when the repo defines it; otherwise run the narrowest available verification commands for the files you changed, then note what full-project checks were unavailable.
+- If `mix precommit` exists, expect it to gate on compilation warnings, dependency hygiene, formatting, security checks, strict linting, coverage, and Dialyzer.
+- If `mix` or Elixir are unavailable in the shell and the environment uses `mise`, run `eval "$(mise activate zsh)"`.
 - Do not add typespecs unless the user explicitly asks for them.
 - Use `Req` / `:req` for HTTP; avoid `:httpoison`, `:tesla`, and `:httpc`.
-- Install packages with `mix igniter.install <package>` when that workflow is available.
+- Install packages with `mix igniter.install <package>` when that workflow is available; otherwise use the repo's normal dependency-management path.
 - Prefer `rg`, `fd`, `bat`, `jq`, and `delta` over slower defaults.
+- If expected project tooling or conventions are missing, tell the user briefly before adapting. Examples: no `mix precommit`, no `usage_rules` tasks, no `mix igniter.install`, or missing boundary/helper modules the normal workflow assumes.
 
 ## Question-only requests
 
@@ -26,9 +28,10 @@ When the user asks a question rather than requesting implementation, do not make
 ## Project guidance sources
 
 - Thoroughly consult dependency `usage_rules` before making changes in the areas they cover.
-- When looking up dependency or Elixir module docs, prefer `mix usage_rules.docs`.
-- When searching package documentation, prefer `mix usage_rules.search_docs`.
+- When looking up dependency or Elixir module docs, prefer `mix usage_rules.docs` if the task exists; otherwise use the package docs or `mix help`.
+- When searching package documentation, prefer `mix usage_rules.search_docs` if the task exists; otherwise use the best available local or official docs.
 - Use `mix help <task>` before running unfamiliar mix tasks.
+- If those expected documentation helpers are absent, say so briefly rather than implying they exist.
 
 ## Elixir and Phoenix guardrails
 
@@ -49,7 +52,7 @@ When the user asks a question rather than requesting implementation, do not make
 - Stay Ash-first when the feature is built on Ash resources and domains; do not drift into Phoenix-default or Ecto-first patterns unless the code already does so for a good reason.
 - LiveViews should call domain-level interfaces for actions.
 - Authorization belongs in Ash policies, AshAuth flows, and `Ash.can?/2`, not repeated ad hoc in LiveViews or controllers.
-- Respect established boundary modules and usage rules rather than bypassing them from UI or orchestration code.
+- Respect established boundary modules and usage rules when they exist rather than bypassing them from UI or orchestration code.
 
 ## Testing defaults
 

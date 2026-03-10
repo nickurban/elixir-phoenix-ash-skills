@@ -1,6 +1,7 @@
 ---
 name: working-with-ash
 description: Use when creating or updating Ash resources, domains, actions, policies, relationships, migrations, code interfaces, or AshPhoenix form flows in Phoenix projects that use Ash.
+license: MIT
 ---
 
 # Working with Ash
@@ -8,6 +9,8 @@ description: Use when creating or updating Ash resources, domains, actions, poli
 Use this skill for implementation work inside Ash resources and domains, including schema changes and AshPhoenix form flows.
 
 Before making Ash changes, consult the relevant Ash package `usage_rules` when available.
+
+If the project is missing expected Ash workflows or helpers, tell the user briefly and verify the actual local pattern before choosing a fallback.
 
 ## Core Ash guardrails
 
@@ -23,6 +26,7 @@ Before making Ash changes, consult the relevant Ash package `usage_rules` when a
 - Never write migrations by hand.
 - Never use `mix ecto.migrate` for Ash-managed schema work.
 - If a generated migration is wrong, fix the resource definition and regenerate instead of editing the migration.
+- If `mix ash.codegen` or `mix ash.migrate` is unavailable, call that out and inspect how the project actually handles schema changes before proceeding.
 
 ## Resource modeling defaults
 
@@ -50,9 +54,10 @@ See [references/policies-and-authorization.md](references/policies-and-authoriza
 
 - Cross-domain and UI-facing calls should go through domain `define` interfaces.
 - Within-domain helper calls can use resource `code_interface`.
-- Prefer generated `form_to_*` helpers over direct `AshPhoenix.Form.for_create/for_update`.
+- Prefer generated `form_to_*` helpers over direct `AshPhoenix.Form.for_create/for_update` when the domain exposes them.
 - Keep the `to_form/1` result in assigns and validate/submit that stored Ash form.
 - Do not introduce Ecto changesets just to power a LiveView form.
+- If the expected `form_to_*` helpers or AshPhoenix integration are missing, tell the user and confirm the intended form workflow before falling back.
 
 See [references/forms-and-interfaces.md](references/forms-and-interfaces.md) for example patterns.
 
