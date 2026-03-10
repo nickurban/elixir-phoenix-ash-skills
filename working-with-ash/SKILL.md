@@ -7,12 +7,15 @@ description: Use when creating or updating Ash resources, domains, actions, poli
 
 Use this skill for implementation work inside Ash resources and domains, including schema changes and AshPhoenix form flows.
 
+Before making Ash changes, consult the relevant Ash package `usage_rules` when available.
+
 ## Core Ash guardrails
 
 - Stay Ash-first. Do not replace Ash patterns with Phoenix-default changesets or generic Ecto guidance unless the target code already uses Ecto directly.
 - Keep resource-specific behavior in the resource module. Let domains orchestrate workflows and expose cross-resource or cross-domain interfaces.
 - LiveViews should call domain-level interfaces for actions.
 - Authorization belongs in policies and `Ash.can?/2`, not in duplicated UI/controller checks.
+- Use dependency docs and `usage_rules` to confirm actual Ash behavior before assuming APIs or return shapes.
 
 ## Migrations
 

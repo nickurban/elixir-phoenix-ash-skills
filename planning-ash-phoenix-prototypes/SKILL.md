@@ -19,6 +19,7 @@ Use this skill when the user wants a plan rather than immediate implementation.
 
 Identify the requirements and search for existing tools that simplify the implementation:
 
+- relevant dependency `usage_rules`
 - relevant Ash extensions
 - project dependencies already in use
 - well-maintained Elixir libraries when no Ash extension fits

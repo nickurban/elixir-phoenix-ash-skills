@@ -9,6 +9,8 @@ Use this skill for fast, functional LiveView UI work that should stay on real Ph
 
 Treat DaisyUI-based prototypes as the default UI delivery path for these projects.
 
+Check relevant Phoenix and Ash `usage_rules` before introducing new UI structure or hook patterns.
+
 ## Hard rules
 
 - Use and improve shared function components before duplicating markup.

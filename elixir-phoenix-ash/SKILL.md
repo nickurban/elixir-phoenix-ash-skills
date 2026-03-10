@@ -23,6 +23,13 @@ Assume these projects also have shared `usage_rules` and `boundary` conventions;
 
 When the user asks a question rather than requesting implementation, do not make code changes. Inspect the codebase, research the answer, and respond directly.
 
+## Project guidance sources
+
+- Thoroughly consult dependency `usage_rules` before making changes in the areas they cover.
+- When looking up dependency or Elixir module docs, prefer `mix usage_rules.docs`.
+- When searching package documentation, prefer `mix usage_rules.search_docs`.
+- Use `mix help <task>` before running unfamiliar mix tasks.
+
 ## Elixir and Phoenix guardrails
 
 - Prefer small, pragmatic changes over broad rewrites.

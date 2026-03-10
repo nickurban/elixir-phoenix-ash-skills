@@ -7,6 +7,8 @@ description: Use when writing or updating Phoenix feature tests with PhoenixTest
 
 Use this skill for end-to-end style Phoenix feature tests built with PhoenixTest.
 
+Check relevant `usage_rules` before introducing new testing patterns.
+
 ## Default approach
 
 - Start tests with `conn |> visit(path)`.
@@ -28,6 +30,7 @@ Use this skill for end-to-end style Phoenix feature tests built with PhoenixTest
 - If async UI work needs time, wait with `assert_has(..., timeout: ...)`.
 - Assert on specific elements, not the entire HTML response.
 - If the view needs better test hooks, add stable DOM ids or descriptive `data-*` attributes.
+- Confirm PhoenixTest APIs and test helper behavior with local docs when uncertain.
 
 It is acceptable to use `Phoenix.LiveViewTest.render_component/2` for isolated function-component rendering tests.
 
@@ -42,6 +45,7 @@ It is acceptable to use `Phoenix.LiveViewTest.render_component/2` for isolated f
 If you need API help, inspect PhoenixTest docs locally. Packages that are test-only may require `MIX_ENV=test`.
 
 - `MIX_ENV=test mix help PhoenixTest`
+- `mix usage_rules.docs PhoenixTest` and `mix usage_rules.search_docs PhoenixTest` when available
 
 ## Related skills
 
