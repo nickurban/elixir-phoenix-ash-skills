@@ -16,6 +16,7 @@ Build functional, wireframe-style screens quickly in LiveView
 - Use Tailwind utilities for layout/spacing
 - Ensure UI works in light and dark themes
 - Prioritize **functionality over aesthetics** (wireframe layouts, minimal custom styling).
+- Keep prototypes on real project rails: Ash domains/resources, `form_to_*`, policies, and verified routes rather than temporary Phoenix-default stand-ins.
 - **Only `app.js` and `app.css` bundles** are supported; do not add vendor `<script>`/`<link>`.
 - **Never** write inline `<script>...</script>` in HEEx. If JS needed, use **LiveView colocated hooks** (`<script :type={Phoenix.LiveView.ColocatedHook} ...>`).
 - Page templates **must** start with `<Layouts.app flash={@flash} ...>` (and pass `current_scope` and `current_user`).
@@ -67,6 +68,8 @@ Practical implications for wireframes:
 - If a page needs an explicit theme toggle later, implement it by setting `data-theme` on a parent/root element (don’t invent a new CSS approach).
 
 ## Workflow: build a new screen fast
+
+For prototypes that span multiple steps or screens, create/update a `.cursor/plans/*.plan.md` artifact so the UI slices, domain decisions, and verification steps stay durable across sessions.
 
 ### 0) Reuse and evolve `core_components.ex`
 
