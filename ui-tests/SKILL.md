@@ -47,6 +47,7 @@ end
 
 - For bug fixes, add a failing test first, then make it pass.
 - Use Ash generators to create test data when a generator exists. Do not use `Ash.create`.
+- Exercise Ash-generated forms through the rendered UI; do not bypass them with Phoenix-default changeset helpers in feature tests.
 - Do not use fixtures except vcr fixtures.
 - Add security-related coverage when behavior depends on permissions or actor scope.
 - Do not sleep in tests. Wait with assertions and timeouts instead.
