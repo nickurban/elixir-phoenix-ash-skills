@@ -21,8 +21,8 @@ This repository contains opinionated Codex skills for Elixir/Phoenix projects bu
 
 ```text
 elixir-phoenix-ash/
+phoenix-ui-tests/
 planning-ash-phoenix-prototypes/
-ui-tests/
 wireframe-liveview-daisyui/
 working-with-ash/
 ```
