@@ -14,6 +14,13 @@ description: Create and update Ash resources, domains, relationships, references
 - **Never** use `mix ecto.migrate`
 - **Never** edit generated migrations **always** update the resource and re-run ash.codegen instead
 
+## Critical Ash Guardrails
+
+- When a feature is built on Ash resources/domains, do not fall back to generic Ecto-first guidance unless the file actually uses Ecto directly.
+- LiveViews should use domain-level interfaces, `form_to_*` helpers, and `AshPhoenix.Form` flows rather than Phoenix-default changeset/controller patterns.
+- Authorization belongs in Ash policies, AshAuth flows, and `Ash.can?`; do not duplicate the same permission logic in LiveViews or controllers.
+- For multi-step work, prefer plan and review guidance that keeps Ash resources, forms, and policies as the source of truth.
+
 ## Resource Structure
 
 Follow this section order (configured in `config.exs`):
@@ -155,6 +162,48 @@ create :create do
 end
 ```
 
+## AshPhoenix Forms in LiveView
+
+Prefer generated form helpers over Phoenix-default form setup:
+
+```elixir
+form =
+  MyDomain.form_to_create_thing(actor: current_user, as: "thing")
+  |> to_form()
+```
+
+For record updates:
+
+```elixir
+form =
+  MyDomain.form_to_update_thing(record, actor: current_user, as: "thing")
+  |> to_form()
+```
+
+In event handlers, validate and submit the stored Ash form:
+
+```elixir
+def handle_event("validate", %{"thing" => params}, socket) do
+  form = AshPhoenix.Form.validate(socket.assigns.form, params)
+
+  {:noreply, assign(socket, :form, form)}
+end
+
+def handle_event("save", %{"thing" => params}, socket) do
+  case AshPhoenix.Form.submit(socket.assigns.form, params: params) do
+    {:ok, thing} -> {:noreply, assign(socket, :thing, thing)}
+    {:error, form} -> {:noreply, assign(socket, :form, form)}
+  end
+end
+```
+
+Guidelines:
+
+- Prefer `form_to_*` interfaces generated from Ash code interfaces
+- Avoid `AshPhoenix.Form.for_create/for_update` when a `form_to_*` helper exists
+- Do not introduce Ecto changesets or `cast/4` just to power a LiveView form
+- Keep the `to_form/1` result in assigns and pass that form back through `AshPhoenix.Form.validate/2` and `AshPhoenix.Form.submit/2`
+
 ### Custom Validations in Actions
 
 ```elixir
@@ -182,6 +231,7 @@ end
 
 - Prefer built-in checks (`relates_to_actor_via`, `actor_attribute_equals`, etc.) over custom checks
 - **Never** perform permission checks in validations, **always** perform them via policies.
+- Prefer AshAuthentication/AshAuthenticationPhoenix flows for auth-related behavior instead of hand-rolled controller/session logic unless the existing code already requires a custom path.
 
 ### Setting Ownership on Create
 
