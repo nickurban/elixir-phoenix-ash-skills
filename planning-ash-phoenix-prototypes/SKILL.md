@@ -1,173 +1,61 @@
 ---
 name: planning-ash-phoenix-prototypes
-description: Plan pragmatic Ash-Phoenix-LiveView implementations with concise, non-redundant specifications. Use when creating implementation plans for Ash resources, domains, state machines, or Phoenix LiveView features.
+description: Use when creating implementation plans for Ash, Phoenix, and LiveView work. Produces concise, durable plans that stay Ash-first, identify dependencies early, and map requirements to concrete execution steps.
 ---
 
-# Planning Ash-Phoenix-LiveView Prototypes
+# Planning Ash Phoenix Prototypes
 
-## Pre-Planning: Discover Extensions and Libraries
+Use this skill when the user wants a plan rather than immediate implementation.
 
-**Before writing the plan**, search for relevant Ash extensions and well-maintained Elixir libraries that could simplify the implementation.
+## Planning goals
 
-### Discovery Process
+- Produce a plan that can drive real implementation work.
+- Stay Ash-first when the system is built on Ash resources and domains.
+- Respect existing `usage_rules` and boundary conventions when the repo defines them.
+- Keep the plan concise; do not repeat detail already captured in other skills.
+- Map each explicit requirement, review finding, and notable risk to a task, decision, or explicit deferment.
 
-1. **Identify key requirements** from the user's request (state management, audit trails, file uploads, etc.)
-2. **Search for Ash extensions** that address these needs:
-   - Check `mix hex.search ash_` for available extensions
-   - Review project dependencies for already-installed extensions
-   - Consult Ash documentation for official extensions
-3. **Search for Elixir libraries** if no Ash extension exists:
-   - Use `mix hex.search` for relevant libraries
-   - Prefer well-maintained libraries (recent updates, good documentation)
-4. **Ask the user** before finalizing the plan only when the choice:
-   - Adds a new dependency or extension
-   - Changes the architecture materially
-   - Has meaningful trade-offs the user should choose between
-5. Otherwise, prefer the simplest approach that fits the repo rules and mention the choice briefly in the plan
+## Before drafting the plan
 
-### Common Ash Extensions to Consider
+Identify the requirements and search for existing tools that simplify the implementation:
 
-- **State Management**: `ash_state_machine` - For resources with state transitions
-- **Audit Trails**: 
-  - `ash_events` - For tracking changes and events
-  - `ash_paper_trail` - Alternative audit trail solution
-- **File Uploads**: `ash_file` - For handling file attachments
-- **Money/Currency**: `ash_money` - For financial amounts (already common)
-- **Slug Generation**: `ash_slug` - For URL-friendly identifiers
-- **Full-Text Search**: `ash_postgres_full_text_search` - For search functionality
-- **JSON API**: `ash_json_api` - For JSON API compliance
-- **GraphQL**: `ash_graphql` - For GraphQL APIs
+- relevant Ash extensions
+- project dependencies already in use
+- well-maintained Elixir libraries when no Ash extension fits
 
-### Example Discovery Questions
+Ask the user before locking in a choice only when it introduces a new dependency, materially changes architecture, or creates a meaningful trade-off they should choose.
 
-**State Management:**
-> "For tracking state on Order (or ApprovalRequest, etc.), should we use `ash_state_machine` or manage state manually with status attributes?"
+## What the plan should include
 
-**Audit Trails:**
-> "For audit trail, should we use `ash_events`, `ash_paper_trail`, or create a custom event resource?"
+- the intended resource, domain, LiveView, and test shape
+- the key decisions and why they were chosen
+- the execution order, preferably in independently testable vertical slices
+- the verification path, including tests and `mix precommit`
 
-**File Handling:**
-> "For file uploads, should we use `ash_file` or handle files manually?"
+## Durable plan artifacts
 
-### When to Ask
+If the repo has an established durable planning artifact or plan-file convention, use it for substantial work. If not, keep the plan in the response. Do not invent unnecessary planning ceremony for obvious small changes.
 
-- **Ask** when a new dependency, extension, or architectural direction is being introduced
-- **Don't ask** for routine choices when the repo already has a preferred pattern or standard tool
-- **Prefer the simplest fit** when one option is clearly aligned with repo rules and existing conventions
-- **Ask early** before writing detailed plan sections that depend on the choice
+## Ash-first planning rules
 
-## Core Principles
+- Plan real Ash resources, actions, forms, and policies rather than throwaway Phoenix-default stand-ins.
+- Put authorization work in policies, not action validations.
+- Let Ash and extensions handle defaults they already own.
+- Route work through the intended boundaries instead of planning cross-layer shortcuts.
+- Prefer a vertical slice first when the shape is uncertain.
 
-1. **Discover tools first** - Search for extensions/libraries before planning implementation details
-2. **Use a durable plan artifact** - For substantial work, create or update `.cursor/plans/*.plan.md` so state survives session resets
-3. **Don't repeat what's in skills** - If information is in available skills, reference it (if necessary). Do not repeat it!
-4. **Let Ash handle defaults** - Don't specify defaults that Ash/AshStateMachine/etc already provides
-5. **Model resources** - Show what the domains, resources, and relationships, and key actions will be.
-5. **Use the right tool for the job** - Attributes for nullability, policies for authorization, state machine for transitions
-6. **Be concise** - Avoid redundant steps (e.g., don't list individual mix tasks covered by `mix precommit`)
+## Final plan checks
 
-## Decide Whether to Write a Plan
+Before presenting the plan, confirm:
 
-Create or update a plan artifact when the task:
+- the plan is the simplest approach that fits the codebase
+- dependency choices are explicit
+- no requirement was silently dropped
+- the plan references specialist skills instead of duplicating them
+- the final steps include tests, coverage review when relevant, and `mix precommit`
 
-- spans multiple files or layers
-- coordinates Ash resources/domains with LiveView/UI/tests
-- starts from review findings or a prior plan
-- is a prototype where decisions and trade-offs need to persist
+## Related skills
 
-Skip the extra ceremony for obvious one-file fixes.
-
-## Plan Artifact Format
-
-Prefer the repo's existing `.cursor/plans/*.plan.md` format:
-
-Treat the plan file as the workflow state, not a throwaway design note.
-
-## Requirement Mapping Rule
-
-Every explicit user requirement, review finding, or known risk should map to one of:
-
-- a todo item
-- a concrete design decision
-- an explicit deferment
-
-Do not silently omit a requirement because it seems implied.
-
-## Selective Parallel Research
-
-Research in parallel only when it reduces uncertainty. Useful lanes in this repo are:
-
-1. existing local patterns for similar code
-2. Usage rules, other tools (e.g. for UI or testing)
-3. external docs for unfamiliar libraries or extensions
-
-The code is Ash-first, do not default to Ecto or Phoenix-default planning patterns.
-
-## Plan for Real Execution
-
-The plan should be written so it remains useful during implementation, not just at design time.
-
-- Treat the `.cursor/plans/*.plan.md` file as the source of truth as work progresses.
-- When the shape is uncertain, plan to implement one vertical slice first before broad rollout.
-- Break the work down into cycles that can be independently tested. Write and test base layers (e.g. domain) before writing and testing the next (e.g. UI, API).
-- Practice TDD. The first implementation step should be to create failing tests.
-- The final plan steps should include coverage review, refactoring, and `mix precommit`.
-
-## Ash-First Prototyping
-
-Even for prototypes, plan on real project rails:
-
-- real Ash domains/resources/actions
-- real `form_to_*` and `AshPhoenix.Form` flows
-- real authorization paths
-- real LiveView routing and component structure
-
-Do not plan throwaway Phoenix-default forms or Ecto-first shortcuts that will be rebuilt later for Ash.
-
-## Capture Reusable Learnings
-
-If the task is likely to teach the next agent something durable, add a note in the plan to update `AGENTS.md` at the end of the work.
-
-## Common Anti-Patterns to Avoid
-
-### Policies vs Validations
-
-- **Policies handle:** Authorization, actor checks, flags on the actor (e.g., checking if actor has approver role)
-- **Validations handle:** Business logic (e.g., amount must be positive)
-- **Attributes handle:** Nullability via `allow_nil?`
-- **References handle:** foreign key constraints
-- **Identities handle:** unique
-- AshStateMachine sets its own initial state and does its own transition validation
-
-## Planning Checklist
-
-When creating an Ash implementation plan:
-
-1. **Before planning**: Search for relevant Ash extensions and Elixir libraries
-2. Decide whether the work needs a `.cursor/plans/*.plan.md` artifact or can stay as a quick change
-3. Ask the user about extensions/libraries only when the choice adds a dependency or has meaningful trade-offs
-4. Reference the Ash skill for standard patterns (don't repeat them)
-5. Use the repo's plan format with frontmatter todos as durable execution state
-6. Map every requirement/finding to a todo, decision, or explicit deferment
-7. Move authorization checks to policies section, not action validations
-8. Use appropriate extensions (e.g., AshStateMachine for state management)
-9. Specify calculation behavior clearly (what it returns, not just when it runs)
-10. Consolidate final steps (use `mix precommit`, not individual tasks)
-11. Remove redundant notes about defaults already documented in skills
-12. **Review the completed plan**:
-   - Is this the right approach? (Consider alternatives, extensions, simpler solutions)
-   - Is the plan well-drafted? (Clear, organized, easy to follow)
-   - Is it concise? (No redundant information, no repetition of skill content)
-   - Are there any anti-patterns from the "Common Anti-Patterns" section?
-   - Does it follow all principles in this skill?
-
-## Example: Clean Action Definition
-
-```markdown
-- [ ] Add `update :confirm` action (state machine transition)
-  - [ ] Accept: `[:notes]`
-  - [ ] Send confirmation email (custom change)
-  - [ ] Note: State transition handled by state machine. Actor authorization handled by policies.
-```
-
-This is concise and focuses on what's unique to this action (sending the email), not what's handled elsewhere.
+- Use `working-with-ash` for detailed resource, policy, migration, and form guidance.
+- Use `wireframe-liveview-daisyui` for the default DaisyUI prototype path, LiveView UI structure, and component decisions.
+- Use `phoenix-ui-tests` for feature-test strategy and PhoenixTest usage.

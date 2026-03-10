@@ -1,0 +1,4 @@
+interface:
+  display_name: "Wireframe LiveView with DaisyUI"
+  short_description: "LiveView wireframes with DaisyUI and Tailwind"
+  default_prompt: "Use $wireframe-liveview-daisyui to scaffold or refine a LiveView screen."

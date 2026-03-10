@@ -1,0 +1,4 @@
+interface:
+  display_name: "Planning Ash Phoenix Prototypes"
+  short_description: "Planning skill for Ash Phoenix implementation work"
+  default_prompt: "Use $planning-ash-phoenix-prototypes to create an Ash-first implementation plan."

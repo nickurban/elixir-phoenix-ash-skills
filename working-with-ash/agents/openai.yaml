@@ -1,0 +1,4 @@
+interface:
+  display_name: "Working with Ash"
+  short_description: "Ash resources, policies, forms, and migrations"
+  default_prompt: "Use $working-with-ash to update Ash resources, actions, policies, or forms."

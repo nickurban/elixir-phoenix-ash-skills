@@ -1,67 +1,49 @@
 ---
 name: phoenix-ui-tests
-description: Write feature tests for both LiveView and dead/controller views using PhoenixTest.
+description: Use when writing or updating Phoenix feature tests with PhoenixTest for LiveView and dead views, including Ash-powered forms and permission-sensitive UI flows.
 ---
 
-# Testing LiveView and Dead Views
+# Phoenix UI Tests
 
-**PhoenixTest** provides a unified API that works identically for both LiveView and static pages. No need to distinguish between them.
+Use this skill for end-to-end style Phoenix feature tests built with PhoenixTest.
 
-## Basic Usage
+## Default approach
 
-```elixir
-test "visiting a page", %{conn: conn} do
-  conn
-  |> visit("/")
-  |> fill_in("Name", with: "Aragorn")
-  |> click_button("Create")
-  |> assert_has(".user", text: "Aragorn")
-end
-```
+- Start tests with `conn |> visit(path)`.
+- Use PhoenixTest actions and assertions end-to-end for both LiveView and dead/controller views.
+- For bug fixes, add a failing test first.
+- Keep tests fast; never sleep in tests.
 
-## Key Functions
+## Core PhoenixTest APIs
 
-**Navigation:** `visit/2`, `click_link/2`, `click_button/2`
-
-**Forms:** `fill_in/3`, `select/3`, `check/2`, `uncheck/2`, `choose/2`, `upload/4`, `submit/1`
-
-**Assertions:** `assert_has/2`, `assert_has/3`, `refute_has/2`, `refute_has/3`, `assert_path/2`, `refute_path/2`
-
-**Scoping:** `within/3` - scope actions to a selector or child LiveView
+- Navigation: `visit/2`, `click_link/2`, `click_button/2`
+- Forms: `fill_in/3`, `select/3`, `check/2`, `uncheck/2`, `choose/2`, `upload/4`, `submit/1`
+- Assertions: `assert_has/2`, `assert_has/3`, `refute_has/2`, `refute_has/3`, `assert_path/2`, `refute_path/2`
+- Scoping: `within/3`
 
 ## Rules
 
-- Use `within` + semantic id (e.g. label, link text) to identify elements, not complex selectors.
-- Use `timeout:` option with `assert_has/3` to wait for async LiveView operations
-- In view tests, use specific selectors to check the value of the element in question. **Never** match on the entire HTML response.
-- **Do not use `Phoenix.LiveViewTest` APIs in feature tests**
-  - Forbidden: `live/2`, `form/2`, `render_change/1`, `render_submit/1`, `render_click/1`, `render_async/2`, `element/2`, etc.
-  - These tests should start with `conn |> visit(path)` and use PhoenixTest actions/assertions end-to-end.
-- **Exception**: it’s OK to use `Phoenix.LiveViewTest.render_component/2` for function-component rendering tests.
-- Do **not** use `render_async/2`. Instead, wait via `assert_has(..., timeout: 10_000)` for the UI you expect.
-- **If you must push messages to the LiveView process**
-  - After `session = conn |> visit(path)`, you can `send(session.view.pid, msg)` (PhoenixTest sessions expose `session.view`).
-- If needed for stable assertions, add id, classes or `data-*` attributes to views and target those in tests.
+- Do not use `Phoenix.LiveViewTest` interaction APIs in feature tests.
+- Use `within/3` and stable semantic identifiers rather than brittle selectors.
+- If async UI work needs time, wait with `assert_has(..., timeout: ...)`.
+- Assert on specific elements, not the entire HTML response.
+- If the view needs better test hooks, add stable DOM ids or descriptive `data-*` attributes.
 
-## Project testing expectations
+It is acceptable to use `Phoenix.LiveViewTest.render_component/2` for isolated function-component rendering tests.
 
-- For bug fixes, add a failing test first, then make it pass.
-- Use Ash generators to create test data when a generator exists. Do not use `Ash.create`.
-- Exercise Ash-generated forms through the rendered UI; do not bypass them with Phoenix-default changeset helpers in feature tests.
-- Do not use fixtures except vcr fixtures.
-- Add security-related coverage when behavior depends on permissions or actor scope.
-- Do not sleep in tests. Wait with assertions and timeouts instead.
-- Review coverage for the files you touched and keep it at or above the current threshold.
+## Ash-aware testing
 
-## Notes
-
-- Text matching is substring-based by default (use `exact: true` for exact matches)
+- Use Ash generators to create test data when available. Do not use `Ash.create`.
+- Exercise Ash-generated forms through the rendered UI.
+- Add permission coverage when behavior depends on actor scope or authorization.
 
 ## Documentation
 
-Look up documentation for help.
-To look up packages that in mix.exs are `only: :test`, set MIX_ENV=test.
+If you need API help, inspect PhoenixTest docs locally. Packages that are test-only may require `MIX_ENV=test`.
 
 - `MIX_ENV=test mix help PhoenixTest`
 
+## Related skills
 
+- Use `working-with-ash` for resource and form architecture behind the UI.
+- Use `wireframe-liveview-daisyui` when testability depends on UI structure or selectors.

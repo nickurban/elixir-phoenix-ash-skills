@@ -1,0 +1,4 @@
+interface:
+  display_name: "Phoenix UI Tests"
+  short_description: "PhoenixTest feature tests for LiveView and views"
+  default_prompt: "Use $phoenix-ui-tests to write or update Phoenix feature tests."

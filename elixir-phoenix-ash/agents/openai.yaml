@@ -1,0 +1,4 @@
+interface:
+  display_name: "Elixir Phoenix Ash"
+  short_description: "Umbrella skill for Ash Phoenix projects"
+  default_prompt: "Use $elixir-phoenix-ash to work in this Ash-based Phoenix project."
