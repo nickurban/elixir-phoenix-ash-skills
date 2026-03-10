@@ -66,109 +66,14 @@ description: Plan pragmatic Ash-Phoenix-LiveView implementations with concise, n
 
 ## Common Anti-Patterns to Avoid
 
-### Redundant Attribute Notes
-
-❌ **Don't do this:**
-```markdown
-- [ ] Add `amount` attribute (Ash.Money type)
-  - [ ] Note: `allow_nil?: false` is the default per Ash skill
-```
-
-✅ **Do this:**
-```markdown
-- [ ] Add `amount` attribute (Ash.Money type)
-  - [ ] Note: Ash.Money includes both amount and currency, so no separate currency attribute is needed
-```
-
-**Why:** The Ash skill already documents that `allow_nil?: false` is the default. Only note exceptions or domain-specific insights.
-
-### Redundant Validations in Actions
-
-❌ **Don't do this:**
-```markdown
-- [ ] Add `create :create` action
-  - [ ] Validate buyer is not nil
-  - [ ] Validate seller is not nil
-  - [ ] Validate approver has approver role
-  - [ ] Set initial status to `:pending`
-```
-
-✅ **Do this:**
-```markdown
-- [ ] Add `create :create` action
-  - [ ] Accept: `[:amount, :buyer_id, :seller_id, :approver_id]`
-  - [ ] Relate actor as creator (if applicable)
-  - [ ] Note: Not-nil validations handled by `allow_nil?: false` on relationships. Approver-role checks handled by policies.
-```
-
-**Why:**
-- Not-nil is handled by `allow_nil?: false` on attributes/relationships
-- Role/flag checks (e.g. "actor is approver") belong in policies, not validations
-- Initial state is set by state machine automatically
-- State transitions are validated by AshStateMachine
-
-### Redundant State Transition Notes
-
-❌ **Don't do this:**
-```markdown
-- [ ] Add `update :approve` action
-  - [ ] Validate status is `:pending`
-  - [ ] Change status to `:approved`
-  - [ ] Validate actor is the approver
-```
-
-✅ **Do this:**
-```markdown
-- [ ] Add `update :approve` action (state machine transition)
-  - [ ] Accept: `[:notes]`
-  - [ ] Note: State transition handled by state machine. Actor authorization handled by policies.
-```
-
-**Why:** AshStateMachine handles state transitions and validates them. Policies handle actor authorization.
-
-### Redundant Mix Tasks
-
-❌ **Don't do this:**
-```markdown
-- [ ] Run `mix test` and ensure all tests pass
-- [ ] Run `mix dialyzer` and fix any type errors
-- [ ] Run `mix format` to ensure code formatting
-- [ ] Run `mix credo` and fix any issues
-- [ ] Run `mix precommit` and fix any issues
-```
-
-✅ **Do this:**
-```markdown
-- [ ] Run `mix precommit` and fix any issues
-- [ ] Review test coverage with `mix coverage` and ensure it meets or exceeds threshold
-```
-
-**Why:** `mix precommit` already includes test, dialyzer, format, and credo checks.
-
-### Vague Calculation Descriptions
-
-❌ **Don't do this:**
-```markdown
-- [ ] Add `calculate :approval_mismatch, :boolean`
-  - [ ] Only calculate when both approval flags are set
-```
-
-✅ **Do this:**
-```markdown
-- [ ] Add `calculate :approval_mismatch, :boolean`
-  - [ ] Returns `nil` unless both `buyer_approved` and `seller_approved` are set
-  - [ ] When both are set, returns `true` if they differ, `false` if they match
-```
-
-**Why:** Specify the actual behavior, not just when it runs.
-
-## Domain-Specific Insights
-
 ### Policies vs Validations
 
 - **Policies handle:** Authorization, actor checks, flags on the actor (e.g., checking if actor has approver role)
 - **Validations handle:** Business logic (e.g., amount must be positive)
 - **Attributes handle:** Nullability via `allow_nil?`
+- **References handle:** foreign key constraints
+- **Identities handle:** unique
+- AshStateMachine sets its own initial state and does its own transition validation
 
 ## Planning Checklist
 
@@ -180,7 +85,7 @@ When creating an Ash implementation plan:
 4. Move authorization checks to policies section, not action validations
 5. Use appropriate extensions (e.g., AshStateMachine for state management)
 6. Specify calculation behavior clearly (what it returns, not just when it runs)
-7. Consolidate final steps (use `mix precommit`, not individual tasks)
+7. Consolidate final steps (run `mix precommit`, not tasks it already contains)
 8. Remove redundant notes about defaults already documented in skills
 9. **Review the completed plan**:
    - Is this the right approach? (Consider alternatives, extensions, simpler solutions)

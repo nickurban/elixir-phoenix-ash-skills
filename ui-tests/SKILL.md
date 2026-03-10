@@ -33,7 +33,7 @@ end
 
 - Use `within` + semantic id (e.g. label, link text) to identify elements, not complex selectors.
 - Use `timeout:` option with `assert_has/3` to wait for async LiveView operations
-- In view tests, **always** use specific selectors to check the value of the element in question. **Never** match on the entire HTML response.
+- In view tests, use specific selectors to check the value of the element in question. **Never** match on the entire HTML response.
 - **Do not use `Phoenix.LiveViewTest` APIs in feature tests**
   - Forbidden: `live/2`, `form/2`, `render_change/1`, `render_submit/1`, `render_click/1`, `render_async/2`, `element/2`, etc.
   - These tests should start with `conn |> visit(path)` and use PhoenixTest actions/assertions end-to-end.
@@ -56,6 +56,11 @@ end
 
 - Text matching is substring-based by default (use `exact: true` for exact matches)
 
-## Resources
+## Documentation
 
-- `mix usage_rules.search_docs PhoenixTest`
+Look up documentation for help.
+To look up packages that in mix.exs are `only: :test`, set MIX_ENV=test.
+
+- `MIX_ENV=test mix help PhoenixTest`
+
+

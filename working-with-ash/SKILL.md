@@ -42,7 +42,8 @@ defmodule MyApp.Domain.Resource do
   end
 
   actions do
-    defaults [:read]
+    default_accept [:name]
+    defaults [:read, :create, :update, :destroy]
   end
 
   attributes do
@@ -54,12 +55,9 @@ end
 
 ## Attributes
 
-- **Use UUIDv7** as the default ID type: `uuid_v7_primary_key :id`
-- **Use `timestamps/1`** instead of defining `inserted_at` and `updated_at` separately
+- **Use UUIDv7** as default ID type
+- **Use `timestamps/1`** instead of defining `inserted_at` and `updated_at`
 - **Always set `allow_nil?: false`** for attributes unless they need to be nullable
-  - Required attributes: `attribute :name, :string, allow_nil?: false`
-  - Optional/nullable attributes: `attribute :notes, :string, allow_nil?: true`
-  - Default behavior should be non-nullable; explicitly mark nullable attributes
 - For JSONB data: `attribute :data, :map, default: %{}, allow_nil?: false`
 
 ## Relationships
@@ -68,13 +66,12 @@ end
 
 ```elixir
 relationships do
-  belongs_to :created_by, MyApp.Accounts.User do
+  belongs_to :owner, MyApp.Accounts.User do
     allow_nil? false
     public? true
   end
 
-  has_many :versions, MyApp.Domain.Version do
-    destination_attribute :resource_id
+  has_many :posts, MyApp.Posts.Post do
     public? true
   end
 end
@@ -87,9 +84,9 @@ Add `references` inside `postgres` block to configure foreign key behavior:
 ```elixir
 postgres do
   references do
-    reference :created_by, on_delete: :restrict
+    reference :independent_resource, on_delete: :restrict
     reference :parent_resource, on_delete: :delete
-    reference :optional_user, on_delete: :nilify
+    reference :optional_resource, on_delete: :nilify
   end
 end
 ```
@@ -120,10 +117,12 @@ end
 
 ### Create Actions
 
+Create actions commonly use relate_actor to set a user reference.
+
 ```elixir
 create :create do
   accept [:name, :description]
-  change relate_actor(:created_by)
+  change relate_actor(:owner)
 end
 ```
 
@@ -205,7 +204,7 @@ policies do
   end
 
   policy action_type(:read) do
-    authorize_if relates_to_actor_via(:created_by)
+    authorize_if relates_to_actor_via(:owner)
   end
 end
 ```
@@ -214,7 +213,7 @@ end
 
 ```elixir
 policy action_type(:read) do
-  authorize_if relates_to_actor_via([:parent, :created_by])
+  authorize_if relates_to_actor_via([:parent, :owner])
 end
 ```
 
@@ -302,8 +301,8 @@ Derived values using expressions:
 
 ```elixir
 calculations do
-  calculate :status, :atom, expr(if(is_nil(locked_at), :draft, :locked)) do
-    constraints one_of: [:draft, :locked]
+  calculate :status, :atom, expr(if(is_nil(locked_at), :draft, :new)) do
+    constraints one_of: [:draft, :new]
     public? true
   end
 end
@@ -349,7 +348,7 @@ MyResource
 
 ## Pattern Matching on Ash Results
 
-**Always** match on what the function actually returns:
+**Always** match on what the function actually returns (check using e.g. `mix help Ash.read_one`):
 
 ```elixir
 # ✅ Correct
@@ -359,7 +358,7 @@ case Ash.read_one(query) do
   {:error, error} -> {:error, error}
 end
 
-# ❌ Wrong - read_one never returns nil directly
+# ❌ Wrong - read_one never returns nil
 case Ash.read_one(query) do
   nil -> :not_found
   {:ok, record} -> record
@@ -407,21 +406,12 @@ Calculate status from timestamp presence rather than redundant fields:
 calculate :status, :atom, expr(if(is_nil(locked_at), :draft, :locked))
 ```
 
-### Lock Actions
-
-Validate state before locking:
-
-```elixir
-update :lock do
-  validate attribute_equals(:locked_at, nil), message: "already locked"
-  change set_attribute(:locked_at, &DateTime.utc_now/0)
-  change relate_actor(:locked_by)
-end
-```
-
 ## Additional Resources
 
 - Consult Ash docs: 
   - deps/ash/usage-rules/*
-  - `mix usage_rules.search_docs <topic> -p ash`
+  - `mix help <foo>` (foo is Module, Module.func etc)
+- Search other docs
+  - To search, consult `mix help usage_rules.search_docs
 - Check AshPostgres usage rules: `deps/ash_postgres/usage-rules.md`
+
