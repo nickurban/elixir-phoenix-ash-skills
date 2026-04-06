@@ -41,6 +41,7 @@ If DaisyUI, expected layout/components, or other normal UI affordances are missi
 ## Design defaults
 
 - Prefer functional wireframes over bespoke styling.
+- Do not use outline labels or buttons.
 - Prefer semantic classes such as `bg-base-100`, `text-base-content`, `border-base-300`, `card`, `btn`, and `alert`.
 - Avoid custom CSS unless the existing component system cannot express the requirement cleanly.
 - Avoid `@apply` in raw CSS.
