@@ -46,6 +46,7 @@ When the user asks a question rather than requesting implementation, do not make
 - Use verified routes with sigil `~p`.
 - Keep business workflows in domains and keep LiveViews focused on orchestration and UI state.
 - Use colocated LiveView hooks unless the hook is intentionally reused.
+- Strings and atoms are not the same! They are distinct as map keys. Make sure to pass or accept only the ones that you need! 
 
 ## Ash-first architecture
 
